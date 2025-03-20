@@ -1,7 +1,7 @@
 class MLModels:
   current_model = "Random Forest"
   """List of available ml models"""
-  available_models = ["Random Forest"] 
+  available_models = ["Linear Regression", "Random Forest Regressor", "Support Vector Machine"]
 
   @staticmethod
   def get_current_model():
