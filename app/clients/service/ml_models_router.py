@@ -1,18 +1,19 @@
 from fastapi import APIRouter, HTTPException
-from app.clients.service.ml_models import MLModels
+from app.clients.service.ml_models import MLModelRepository, MLModelManager
 
 router = APIRouter(prefix="/ml_models")
-
-
+model_repository = MLModelRepository()
+model_manager = MLModelManager(model_repository)
 @router.get("/list")
 def list_models():
-    models = MLModels.list_available_models()
-    return {"models": models}
+    """List all available ML models"""
+    return {"models": model_repository.list_models()}
 
 
 @router.post("/switch/{model_name}")
 def switch_models(model_name: str):
-    success = MLModels.switch_model(model_name)
+    """Switch between ML models"""
+    success = model_manager.switch_model(model_name)
     if not success:
         raise HTTPException(status_code=400, detail="Model switch failed")
     return {"message": f"Model switched to {model_name}"}
@@ -20,5 +21,5 @@ def switch_models(model_name: str):
 
 @router.get("/current")
 def current_model():
-    model = MLModels.get_current_model()
-    return {"current_model": model}
+    """Get the current ML model"""
+    return {"current_model": model_manager.get_current_model()}

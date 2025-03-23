@@ -1,22 +1,60 @@
-class MLModels:
-    current_model = "Random Forest"
-    """List of available ml models"""
-    available_models = ["Linear Regression", "Random Forest Regressor",
-                        "Support Vector Machine"]
+from abc import ABC, abstractmethod
+from typing import List
 
-    @staticmethod
-    def get_current_model():
+
+class InterfaceMLModelRepository(ABC):
+    """Interface for ML Models storage"""
+
+    @abstractmethod
+    def list_models(self) -> List[str]:
+        """Get list of all available models"""
+        pass
+
+    @abstractmethod
+    def is_model_available(self, model_name: str) -> bool:
+        """Check if a model is valid"""
+        pass
+
+
+class InterfaceMLModelManager(ABC):
+    """Interface for ML model management"""
+
+    @abstractmethod
+    def get_current_model(self) -> str:
         """Get the current active ml model"""
-        return MLModels.current_model
+        pass
 
-    @staticmethod
-    def list_available_models():
-        return MLModels.available_models
+    @abstractmethod
+    def switch_model(self, model_name: str) -> bool:
+        """Switch between models"""
+        pass
 
-    @staticmethod
-    def switch_model(model_name: str):
-        """Switch the current ml model"""
-        if model_name in MLModels.available_models:
-            MLModels.current_model = model_name
+
+class MLModelRepository(InterfaceMLModelRepository):
+    def __init__(self):
+        self._available_models = [
+            "Linear Regression",
+            "Random Forest Regressor",
+            "Support Vector Machine"
+        ]
+
+    def list_models(self) -> List[str]:
+        return self._available_models
+
+    def is_model_available(self, model_name: str) -> bool:
+        return model_name in self._available_models
+
+class MLModelManager(InterfaceMLModelManager):
+    def __init__(self, repository: InterfaceMLModelRepository):
+        self._repository = repository
+        self._current_model = "Random Forest Regressor"
+
+    def get_current_model(self) -> str:
+        return self._current_model
+
+    def switch_model(self, model_name: str) -> bool:
+        if self._repository.is_model_available(model_name):
+            self._current_model = model_name
             return True
         return False
+
