@@ -1,14 +1,18 @@
 from fastapi import APIRouter, HTTPException
-from app.clients.service.ml_models import MLModelRepository, MLModelManager
+
+from app.clients.service.ml_models import MLModelManager, MLModelRepository
 
 router = APIRouter(prefix="/ml_models")
 model_repository = MLModelRepository()
 model_manager = MLModelManager(model_repository)
+
+
 @router.get("/list")
 def list_models():
     """List all available ML models"""
     # return {"models": model_repository.list_models()}
     return {"models": [str(model) for model in model_repository.list_models()]}
+
 
 @router.post("/switch/{model_name}")
 def switch_models(model_name: str):

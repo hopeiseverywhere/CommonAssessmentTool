@@ -4,16 +4,19 @@ Provides CRUD operations and business logic for client management.
 """
 
 from abc import ABC, abstractmethod
-from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from typing import Any, Dict, List, Optional
+
 from fastapi import HTTPException, status
-from typing import List, Optional, Dict, Any
+from sqlalchemy import and_
+from sqlalchemy.orm import Session
+
+from app.clients.schema import ClientUpdate, ServiceResponse, ServiceUpdate
 from app.models import Client, ClientCase, User
-from app.clients.schema import ClientUpdate, ServiceUpdate, ServiceResponse
 
 
 class InterfaceClientQueryService(ABC):
     """Interface for client query operations"""
+
     @abstractmethod
     def get_client(self, db: Session, client_id: int) -> Client:
         """Get a specific client by ID"""
@@ -21,7 +24,7 @@ class InterfaceClientQueryService(ABC):
 
     @abstractmethod
     def get_clients(self, db: Session, skip: int, limit: int) -> Dict[str, Any]:
-        """ Get clients with optional pagination."""
+        """Get clients with optional pagination."""
         pass
 
     @abstractmethod
@@ -30,45 +33,45 @@ class InterfaceClientQueryService(ABC):
         pass
 
     @abstractmethod
-    def get_clients_by_services(self, db: Session, **service_filters) -> \
-        List[Client]:
-        """ Get clients filtered by multiple service statuses."""
+    def get_clients_by_services(self, db: Session, **service_filters) -> List[Client]:
+        """Get clients filtered by multiple service statuses."""
 
     pass
 
     @abstractmethod
-    def get_client_services(self, db: Session, client_id: int) -> List[
-        ClientCase]:
+    def get_client_services(self, db: Session, client_id: int) -> List[ClientCase]:
         pass
 
     @abstractmethod
-    def get_clients_by_success_rate(self, db: Session, min_rate: int) -> List[
-        Client]:
+    def get_clients_by_success_rate(self, db: Session, min_rate: int) -> List[Client]:
         pass
 
     @abstractmethod
-    def get_clients_by_case_worker(self, db: Session, case_worker_id: int) -> \
-        List[Client]:
+    def get_clients_by_case_worker(self, db: Session, case_worker_id: int) -> List[Client]:
         pass
 
 
 class InterfaceClientManagementService(ABC):
     """Interface for client management operations"""
+
     @abstractmethod
-    def update_client(self, db: Session, client_id: int,
-        client_update: ClientUpdate) -> ClientUpdate:
+    def update_client(
+        self, db: Session, client_id: int, client_update: ClientUpdate
+    ) -> ClientUpdate:
         """Update a client's information"""
         pass
 
     @abstractmethod
-    def update_client_services(self, db: Session, client_id: int, user_id: int,
-        service_update: ServiceUpdate) -> ClientCase:
+    def update_client_services(
+        self, db: Session, client_id: int, user_id: int, service_update: ServiceUpdate
+    ) -> ClientCase:
         """Update a client's services and outcomes for a specific caseworker"""
         pass
 
     @abstractmethod
-    def create_case_assignment(self, db: Session, client_id: int,
-        case_worker_id: int) -> ClientCase:
+    def create_case_assignment(
+        self, db: Session, client_id: int, case_worker_id: int
+    ) -> ClientCase:
         """Create a new case assignment"""
         pass
 
@@ -88,7 +91,7 @@ class ClientQueryService(InterfaceClientQueryService):
         if not client:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found"
+                detail=f"Client with id {client_id} not found",
             )
         return client
 
@@ -100,13 +103,11 @@ class ClientQueryService(InterfaceClientQueryService):
         """
         if skip < 0:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Skip value cannot be negative"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Skip value cannot be negative"
             )
         if limit < 1:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Limit must be greater than 0"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Limit must be greater than 0"
             )
 
         clients = db.query(Client).offset(skip).limit(limit).all()
@@ -139,7 +140,7 @@ class ClientQueryService(InterfaceClientQueryService):
         attending_school: Optional[bool] = None,
         substance_use: Optional[bool] = None,
         time_unemployed: Optional[int] = None,
-        need_mental_health_support_bool: Optional[bool] = None
+        need_mental_health_support_bool: Optional[bool] = None,
     ):
         """Get clients filtered by any combination of criteria"""
         query = db.query(Client)
@@ -147,19 +148,17 @@ class ClientQueryService(InterfaceClientQueryService):
         if education_level is not None and not (1 <= education_level <= 14):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Education level must be between 1 and 14"
+                detail="Education level must be between 1 and 14",
             )
 
         if age_min is not None and age_min < 18:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Minimum age must be at least 18"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Minimum age must be at least 18"
             )
 
         if gender is not None and gender not in [1, 2]:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Gender must be 1 or 2"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Gender must be 1 or 2"
             )
 
         # Apply filters for non-None values
@@ -184,21 +183,17 @@ class ClientQueryService(InterfaceClientQueryService):
         if fluent_english is not None:
             query = query.filter(Client.fluent_english == fluent_english)
         if reading_english_scale is not None:
-            query = query.filter(
-                Client.reading_english_scale == reading_english_scale)
+            query = query.filter(Client.reading_english_scale == reading_english_scale)
         if speaking_english_scale is not None:
-            query = query.filter(
-                Client.speaking_english_scale == speaking_english_scale)
+            query = query.filter(Client.speaking_english_scale == speaking_english_scale)
         if writing_english_scale is not None:
-            query = query.filter(
-                Client.writing_english_scale == writing_english_scale)
+            query = query.filter(Client.writing_english_scale == writing_english_scale)
         if numeracy_scale is not None:
             query = query.filter(Client.numeracy_scale == numeracy_scale)
         if computer_scale is not None:
             query = query.filter(Client.computer_scale == computer_scale)
         if transportation_bool is not None:
-            query = query.filter(
-                Client.transportation_bool == transportation_bool)
+            query = query.filter(Client.transportation_bool == transportation_bool)
         if caregiver_bool is not None:
             query = query.filter(Client.caregiver_bool == caregiver_bool)
         if housing is not None:
@@ -215,21 +210,19 @@ class ClientQueryService(InterfaceClientQueryService):
             query = query.filter(Client.time_unemployed == time_unemployed)
         if need_mental_health_support_bool is not None:
             query = query.filter(
-                Client.need_mental_health_support_bool == need_mental_health_support_bool)
+                Client.need_mental_health_support_bool == need_mental_health_support_bool
+            )
 
         try:
             return query.all()
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error retrieving clients: {str(e)}"
+                detail=f"Error retrieving clients: {str(e)}",
             )
 
     @staticmethod
-    def get_clients_by_services(
-        db: Session,
-        **service_filters: Optional[bool]
-    ):
+    def get_clients_by_services(db: Session, **service_filters: Optional[bool]):
         """
         Get clients filtered by multiple service statuses.
         """
@@ -245,18 +238,17 @@ class ClientQueryService(InterfaceClientQueryService):
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error retrieving clients: {str(e)}"
+                detail=f"Error retrieving clients: {str(e)}",
             )
 
     @staticmethod
     def get_client_services(db: Session, client_id: int):
         """Get all services for a specific client with caseworker info"""
-        client_cases = db.query(ClientCase).filter(
-            ClientCase.client_id == client_id).all()
+        client_cases = db.query(ClientCase).filter(ClientCase.client_id == client_id).all()
         if not client_cases:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No services found for client with id {client_id}"
+                detail=f"No services found for client with id {client_id}",
             )
         return client_cases
 
@@ -266,12 +258,10 @@ class ClientQueryService(InterfaceClientQueryService):
         if not (0 <= min_rate <= 100):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Success rate must be between 0 and 100"
+                detail="Success rate must be between 0 and 100",
             )
 
-        return db.query(Client).join(ClientCase).filter(
-            ClientCase.success_rate >= min_rate
-        ).all()
+        return db.query(Client).join(ClientCase).filter(ClientCase.success_rate >= min_rate).all()
 
     @staticmethod
     def get_clients_by_case_worker(db: Session, case_worker_id: int):
@@ -280,12 +270,10 @@ class ClientQueryService(InterfaceClientQueryService):
         if not case_worker:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Case worker with id {case_worker_id} not found"
+                detail=f"Case worker with id {case_worker_id} not found",
             )
 
-        return db.query(Client).join(ClientCase).filter(
-            ClientCase.user_id == case_worker_id
-        ).all()
+        return db.query(Client).join(ClientCase).filter(ClientCase.user_id == case_worker_id).all()
 
 
 class ClientManagementService(InterfaceClientManagementService):
@@ -298,7 +286,7 @@ class ClientManagementService(InterfaceClientManagementService):
         if not client:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found"
+                detail=f"Client with id {client_id} not found",
             )
 
         update_data = client_update.dict(exclude_unset=True)
@@ -313,27 +301,25 @@ class ClientManagementService(InterfaceClientManagementService):
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to update client: {str(e)}"
+                detail=f"Failed to update client: {str(e)}",
             )
 
     @staticmethod
     def update_client_services(
-        db: Session,
-        client_id: int,
-        user_id: int,
-        service_update: ServiceUpdate
+        db: Session, client_id: int, user_id: int, service_update: ServiceUpdate
     ):
         """Update a client's services and outcomes for a specific case worker"""
-        client_case = db.query(ClientCase).filter(
-            ClientCase.client_id == client_id,
-            ClientCase.user_id == user_id
-        ).first()
+        client_case = (
+            db.query(ClientCase)
+            .filter(ClientCase.client_id == client_id, ClientCase.user_id == user_id)
+            .first()
+        )
 
         if not client_case:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"No case found for client {client_id} with case worker {user_id}. "
-                       f"Cannot update services for a non-existent case assignment."
+                f"Cannot update services for a non-existent case assignment.",
             )
 
         update_data = service_update.dict(exclude_unset=True)
@@ -348,22 +334,18 @@ class ClientManagementService(InterfaceClientManagementService):
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to update client services: {str(e)}"
+                detail=f"Failed to update client services: {str(e)}",
             )
 
     @staticmethod
-    def create_case_assignment(
-        db: Session,
-        client_id: int,
-        case_worker_id: int
-    ):
+    def create_case_assignment(db: Session, client_id: int, case_worker_id: int):
         """Create a new case assignment"""
         # Check if client exists
         client = db.query(Client).filter(Client.id == client_id).first()
         if not client:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found"
+                detail=f"Client with id {client_id} not found",
             )
 
         # Check if caseworker exists
@@ -371,19 +353,20 @@ class ClientManagementService(InterfaceClientManagementService):
         if not case_worker:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Case worker with id {case_worker_id} not found"
+                detail=f"Case worker with id {case_worker_id} not found",
             )
 
         # Check if assignment already exists
-        existing_case = db.query(ClientCase).filter(
-            ClientCase.client_id == client_id,
-            ClientCase.user_id == case_worker_id
-        ).first()
+        existing_case = (
+            db.query(ClientCase)
+            .filter(ClientCase.client_id == client_id, ClientCase.user_id == case_worker_id)
+            .first()
+        )
 
         if existing_case:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Client {client_id} already has a case assigned to case worker {case_worker_id}"
+                detail=f"Client {client_id} already has a case assigned to case worker {case_worker_id}",
             )
 
         try:
@@ -398,7 +381,7 @@ class ClientManagementService(InterfaceClientManagementService):
                 employment_related_financial_supports=False,
                 employer_financial_supports=False,
                 enhanced_referrals=False,
-                success_rate=0
+                success_rate=0,
             )
             db.add(new_case)
             db.commit()
@@ -409,7 +392,7 @@ class ClientManagementService(InterfaceClientManagementService):
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to create case assignment: {str(e)}"
+                detail=f"Failed to create case assignment: {str(e)}",
             )
 
     @staticmethod
@@ -420,14 +403,12 @@ class ClientManagementService(InterfaceClientManagementService):
         if not client:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found"
+                detail=f"Client with id {client_id} not found",
             )
 
         try:
             # Delete associated client_cases
-            db.query(ClientCase).filter(
-                ClientCase.client_id == client_id
-            ).delete()
+            db.query(ClientCase).filter(ClientCase.client_id == client_id).delete()
 
             # Delete the client
             db.delete(client)
@@ -437,7 +418,7 @@ class ClientManagementService(InterfaceClientManagementService):
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to delete client: {str(e)}"
+                detail=f"Failed to delete client: {str(e)}",
             )
 
 
@@ -479,21 +460,19 @@ class ClientService:
     # Modification methods
     @staticmethod
     def update_client(db: Session, client_id: int, client_update: ClientUpdate):
-        return ClientManagementService.update_client(db, client_id,
-                                                     client_update)
+        return ClientManagementService.update_client(db, client_id, client_update)
 
     @staticmethod
-    def update_client_services(db: Session, client_id: int, user_id: int,
-        service_update: ServiceUpdate):
-        return ClientManagementService.update_client_services(db, client_id,
-                                                              user_id,
-                                                              service_update)
+    def update_client_services(
+        db: Session, client_id: int, user_id: int, service_update: ServiceUpdate
+    ):
+        return ClientManagementService.update_client_services(
+            db, client_id, user_id, service_update
+        )
 
     @staticmethod
-    def create_case_assignment(db: Session, client_id: int,
-        case_worker_id: int):
-        return ClientManagementService.create_case_assignment(db, client_id,
-                                                              case_worker_id)
+    def create_case_assignment(db: Session, client_id: int, case_worker_id: int):
+        return ClientManagementService.create_case_assignment(db, client_id, case_worker_id)
 
     @staticmethod
     def delete_client(db: Session, client_id: int):

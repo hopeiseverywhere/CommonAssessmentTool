@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import List
+
 import numpy as np
-from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
 
 
@@ -19,12 +20,14 @@ class InterfaceBaseMLModel(ABC):
 
     def save(self, path: str):
         import pickle
+
         with open(path, "wb") as f:
             pickle.dump(self, f)
 
     @staticmethod
     def load(path: str):
         import pickle
+
         with open(path, "rb") as f:
             return pickle.load(f)
 
@@ -50,8 +53,7 @@ class LinearRegressionModel(InterfaceBaseMLModel):
 
 class RandomForestModel(InterfaceBaseMLModel):
     def __init__(self, n_estimators=100, random_state=42):
-        self.model = RandomForestRegressor(n_estimators=n_estimators,
-                                           random_state=random_state)
+        self.model = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
 
     def fit(self, X, y):
         self.model.fit(X, y)
@@ -115,7 +117,7 @@ class MLModelRepository(InterfaceMLModelRepository):
         self._model_map = {
             "Linear Regression": LinearRegressionModel,
             "Random Forest Regressor": RandomForestModel,
-            "Support Vector Machine": SVMModel
+            "Support Vector Machine": SVMModel,
         }
 
     def list_models(self) -> List[InterfaceBaseMLModel]:
@@ -133,15 +135,13 @@ class MLModelRepository(InterfaceMLModelRepository):
 class MLModelManager(InterfaceMLModelManager):
     def __init__(self, repository: InterfaceMLModelRepository):
         self._repository = repository
-        self._current_model = repository.get_model_instance(
-            "Random Forest Regressor")
+        self._current_model = repository.get_model_instance("Random Forest Regressor")
 
     def get_current_model(self) -> str:
         return self._current_model
 
     def switch_model(self, model_name: str) -> bool:
         if self._repository.is_model_available(model_name):
-            self._current_model = self._repository.get_model_instance(
-                model_name)
+            self._current_model = self._repository.get_model_instance(model_name)
             return True
         return False
