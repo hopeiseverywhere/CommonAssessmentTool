@@ -1,3 +1,28 @@
+# Overall Project Configuration
+[project]
+name = "Common Assessment Tool"
+version = "1.0.0"
+authors = ["David Treadwell <treadwell.d@northeastern.edu", "Fran Li <li.fengr@northeastern.edu>",
+"Steve Chen <chen.steve2@northeastern.edu>"]
+readme = "README.md"
+repository = "https://github.com/dtread4/CommonAssessmentTool"
+license = "MIT"
+dependencies = {file = ["requirements.txt"]}
+requires-python = ">=3.10"
+
+# Build system
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+# Packages finder
+[tool.setuptools.packages.find]
+where = ["."]
+
+# Optional dependency configuration
+[project.optional-dependencies]
+dev = ["black", "isort"]
+
 # Black Configuration
 [tool.black]
 line-length = 100
