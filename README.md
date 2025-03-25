@@ -29,15 +29,15 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 ```
 
-2. Run the app (uvicorn app.main:app --reload)
+3. Run the app (uvicorn app.main:app --reload)
 
-3. Load data into database (python initialize_data.py)
+4. Load data into database (python initialize_data.py)
 
-4. Go to SwaggerUI (http://127.0.0.1:8000/docs)
+5. Go to SwaggerUI (http://127.0.0.1:8000/docs)
 
-4. Log in as admin (username: admin password: admin123)
+6. Log in as admin (username: admin password: admin123)
 
-5. Click on each endpoint to use
+7. Click on each endpoint to use
 -Create User (Only users in admin role can create new users. The role field needs to be either "admin" or "case_worker")
 
 -Get clients (Display all the clients that are in the database)
