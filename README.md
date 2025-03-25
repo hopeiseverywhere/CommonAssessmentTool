@@ -1,4 +1,4 @@
-Team TicTech 
+Team SuperSonics via TicTech 
 
 Project -- Feature Development Backend: Create CRUD API's for Client
 
@@ -21,6 +21,13 @@ This also has an API file to interact with the front end, and logic in order to 
 
 -------------------------How to Use-------------------------
 1. In the virtual environment you've created for this project, install all dependencies in requirements.txt (pip install -r requirements.txt)
+
+2. Create a .env file with the following fields:
+```markdown
+SECRET_KEY = "your-secret-key-here"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+```
 
 2. Run the app (uvicorn app.main:app --reload)
 
