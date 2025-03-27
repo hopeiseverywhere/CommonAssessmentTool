@@ -1,4 +1,4 @@
-Team TicTech 
+Team SuperSonics via TicTech 
 
 Project -- Feature Development Backend: Create CRUD API's for Client
 
@@ -22,15 +22,22 @@ This also has an API file to interact with the front end, and logic in order to 
 -------------------------How to Use-------------------------
 1. In the virtual environment you've created for this project, install all dependencies in requirements.txt (pip install -r requirements.txt)
 
-2. Run the app (uvicorn app.main:app --reload)
+2. Create a .env file with the following fields:
+```markdown
+SECRET_KEY = "your-secret-key-here"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+```
 
-3. Load data into database (python initialize_data.py)
+3. Run the app (uvicorn app.main:app --reload)
 
-4. Go to SwaggerUI (http://127.0.0.1:8000/docs)
+4. Load data into database (python initialize_data.py)
 
-4. Log in as admin (username: admin password: admin123)
+5. Go to SwaggerUI (http://127.0.0.1:8000/docs)
 
-5. Click on each endpoint to use
+6. Log in as admin (username: admin password: admin123)
+
+7. Click on each endpoint to use
 -Create User (Only users in admin role can create new users. The role field needs to be either "admin" or "case_worker")
 
 -Get clients (Display all the clients that are in the database)

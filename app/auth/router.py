@@ -11,6 +11,9 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User, UserRole
 
+from dotenv import load_dotenv
+import os
+
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
@@ -36,10 +39,11 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
-# Configuration
-SECRET_KEY = "your-secret-key-here"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+# Load configuration from .env
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
