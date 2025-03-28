@@ -62,3 +62,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 -Create case assignment (Allow authorized users to create a new case assignment.)
 
+## Docker Instructions
+1. Follow installation guide from Docker: https://www.docker.com/blog/how-to-dockerize-your-python-applications/
+2. WINDOWS-SPECIFIC: Ensure virtualization is enabled in your system BIOS, or Docker cannot run
+3. Open the Docker Desktop application
+4. In a command prompt, navigate to the CommonAssessmentTool repo's directory on your machine (assumes you already cloned from GitHub) and run the command below (make sure the period at the end is included!):
+```
+docker build -t common_assessment_tool .
+```
+5. Now run docker run --rm -p 8000:8000 common_assessment_tool
+6. Follow the steps to run the Swagger UI as described above (clicking link in step 5 should take you to the UI)
+7. To run using Docker-Compose, run the command below in the CommonAssessmentTool repo's directory
+```
+docker compose up
+```
