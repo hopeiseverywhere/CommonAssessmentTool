@@ -70,7 +70,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 ```
 docker build -t common_assessment_tool .
 ```
-5. Now run docker run --rm -p 8000:8000 common_assessment_tool
+5. Now run  with the following Docker command:
+```
+docker run --rm -p 8000:8000 common_assessment_tool
+```
 6. Follow the steps to run the Swagger UI as described above (clicking link in step 5 should take you to the UI)
 7. To run using Docker-Compose, run the command below in the CommonAssessmentTool repo's directory
 ```
