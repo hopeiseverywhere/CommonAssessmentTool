@@ -31,9 +31,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 3. Run the app (uvicorn app.main:app --reload)
 
-4. Load data into database (python initialize_data.py)
+4. Go to SwaggerUI (http://127.0.0.1:8000/docs) 
 
-5. Go to SwaggerUI (http://127.0.0.1:8000/docs)
+5. Load data into database (python initialize_data.py) (if receiving an error, make sure the app is running and open, then try again)
 
 6. Log in as admin (username: admin password: admin123)
 
