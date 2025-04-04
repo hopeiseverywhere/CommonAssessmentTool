@@ -29,13 +29,13 @@ jobs:
         run: |
           python -m pytest tests/
       
-      - name: Run Linter
-        run: |
-          pylint app tests
-      
       - name: Run Code Formatting with Black
         run: |
-          black --check .   # Check the format of entire repo
+          black .   # Format the entire repo
+          
+      - name: Run Linter
+        run: |
+          pylint ./app ./tests
 
       - name: Print Success Message
         if: success()

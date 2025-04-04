@@ -7,9 +7,7 @@ from enum import IntEnum
 from typing import List, Optional
 
 # Standard library imports
-from pydantic import BaseModel, Field, validator
-
-from app.models import UserRole
+from pydantic import BaseModel, Field
 
 
 # Enums for validation

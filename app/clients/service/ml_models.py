@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+import pickle
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
@@ -12,29 +13,24 @@ class InterfaceBaseMLModel(ABC):
 
     @abstractmethod
     def fit(self, X: np.ndarray, y: np.ndarray):
-        pass
+        """Fit the model to provided data"""
 
     @abstractmethod
     def predict(self, X: np.ndarray) -> np.ndarray:
-        pass
+        """Predict using the fitted model"""
 
     def save(self, path: str):
-        import pickle
-
         with open(path, "wb") as f:
             pickle.dump(self, f)
 
     @staticmethod
     def load(path: str):
-        import pickle
-
         with open(path, "rb") as f:
             return pickle.load(f)
 
     @abstractmethod
     def __str__(self) -> str:
         """Return the name of the model"""
-        pass
 
 
 class LinearRegressionModel(InterfaceBaseMLModel):
@@ -85,17 +81,14 @@ class InterfaceMLModelRepository(ABC):
     @abstractmethod
     def list_models(self) -> List[InterfaceBaseMLModel]:
         """Get list of all available models instances"""
-        pass
 
     @abstractmethod
     def is_model_available(self, model_name: str) -> bool:
         """Check if a model is valid"""
-        pass
 
     @abstractmethod
     def get_model_instance(self, model_name: str) -> InterfaceBaseMLModel:
         """Return an instance of the requested model"""
-        pass
 
 
 class InterfaceMLModelManager(ABC):
@@ -104,12 +97,10 @@ class InterfaceMLModelManager(ABC):
     @abstractmethod
     def get_current_model(self) -> InterfaceBaseMLModel:
         """Get the current active ml model"""
-        pass
 
     @abstractmethod
     def switch_model(self, model_name: str) -> bool:
         """Switch between models"""
-        pass
 
 
 class MLModelRepository(InterfaceMLModelRepository):

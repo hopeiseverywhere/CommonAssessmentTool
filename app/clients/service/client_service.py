@@ -10,7 +10,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from app.clients.schema import ClientUpdate, ServiceResponse, ServiceUpdate
+from app.clients.schema import ClientUpdate, ServiceUpdate
 from app.models import Client, ClientCase, User
 
 
@@ -20,35 +20,30 @@ class InterfaceClientQueryService(ABC):
     @abstractmethod
     def get_client(self, db: Session, client_id: int) -> Client:
         """Get a specific client by ID"""
-        pass
 
     @abstractmethod
     def get_clients(self, db: Session, skip: int, limit: int) -> Dict[str, Any]:
         """Get clients with optional pagination."""
-        pass
 
     @abstractmethod
     def get_clients_by_criteria(self, db: Session, **criteria) -> List[Client]:
         """Get clients filtered by any combination of criteria"""
-        pass
 
     @abstractmethod
     def get_clients_by_services(self, db: Session, **service_filters) -> List[Client]:
         """Get clients filtered by multiple service statuses."""
 
-    pass
-
     @abstractmethod
     def get_client_services(self, db: Session, client_id: int) -> List[ClientCase]:
-        pass
+        """Get client's services"""
 
     @abstractmethod
     def get_clients_by_success_rate(self, db: Session, min_rate: int) -> List[Client]:
-        pass
+        "Get clients filtered by success rate"
 
     @abstractmethod
     def get_clients_by_case_worker(self, db: Session, case_worker_id: int) -> List[Client]:
-        pass
+        "Get clients filtered by case worker"
 
 
 class InterfaceClientManagementService(ABC):
@@ -59,26 +54,22 @@ class InterfaceClientManagementService(ABC):
         self, db: Session, client_id: int, client_update: ClientUpdate
     ) -> ClientUpdate:
         """Update a client's information"""
-        pass
 
     @abstractmethod
     def update_client_services(
         self, db: Session, client_id: int, user_id: int, service_update: ServiceUpdate
     ) -> ClientCase:
         """Update a client's services and outcomes for a specific caseworker"""
-        pass
 
     @abstractmethod
     def create_case_assignment(
         self, db: Session, client_id: int, case_worker_id: int
     ) -> ClientCase:
         """Create a new case assignment"""
-        pass
 
     @abstractmethod
     def delete_client(self, db: Session, client_id: int) -> None:
         """Delete a client and their associated records"""
-        pass
 
 
 class ClientQueryService(InterfaceClientQueryService):
@@ -145,7 +136,7 @@ class ClientQueryService(InterfaceClientQueryService):
         """Get clients filtered by any combination of criteria"""
         query = db.query(Client)
 
-        if education_level is not None and not (1 <= education_level <= 14):
+        if education_level is not None and not 1 <= education_level <= 14:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Education level must be between 1 and 14",
@@ -219,7 +210,7 @@ class ClientQueryService(InterfaceClientQueryService):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error retrieving clients: {str(e)}",
-            )
+            ) from e
 
     @staticmethod
     def get_clients_by_services(db: Session, **service_filters: Optional[bool]):
@@ -239,7 +230,7 @@ class ClientQueryService(InterfaceClientQueryService):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error retrieving clients: {str(e)}",
-            )
+            ) from e
 
     @staticmethod
     def get_client_services(db: Session, client_id: int):
@@ -255,7 +246,7 @@ class ClientQueryService(InterfaceClientQueryService):
     @staticmethod
     def get_clients_by_success_rate(db: Session, min_rate: int = 70):
         """Get clients with success rate at or above the specified percentage"""
-        if not (0 <= min_rate <= 100):
+        if not 0 <= min_rate <= 100:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Success rate must be between 0 and 100",
@@ -302,7 +293,7 @@ class ClientManagementService(InterfaceClientManagementService):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to update client: {str(e)}",
-            )
+            ) from e
 
     @staticmethod
     def update_client_services(
@@ -335,7 +326,7 @@ class ClientManagementService(InterfaceClientManagementService):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to update client services: {str(e)}",
-            )
+            ) from e
 
     @staticmethod
     def create_case_assignment(db: Session, client_id: int, case_worker_id: int):
@@ -393,7 +384,7 @@ class ClientManagementService(InterfaceClientManagementService):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to create case assignment: {str(e)}",
-            )
+            ) from e
 
     @staticmethod
     def delete_client(db: Session, client_id: int):
@@ -419,7 +410,7 @@ class ClientManagementService(InterfaceClientManagementService):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to delete client: {str(e)}",
-            )
+            ) from e
 
 
 class ClientService:

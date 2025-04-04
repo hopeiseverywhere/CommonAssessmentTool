@@ -29,7 +29,7 @@ from sklearn.model_selection import train_test_split
 
 repo = MLModelRepository()
 
-default_unformatted_model_path = "pretrained_models" + os.sep + "model_{}.pkl"
+DEFAULT_UNFORMATTED_MODEL_PATH = "pretrained_models" + os.sep + "model_{}.pkl"
 
 
 def get_model_by_name(model_type: str, n_estimators=100, random_state=42) -> InterfaceBaseMLModel:
@@ -146,7 +146,7 @@ def get_true_file_name(model_type, filename):
     return filename.format(model_type).replace(" ", "_")
 
 
-def save_model(model, model_type, filename=default_unformatted_model_path):
+def save_model(model, model_type, filename=DEFAULT_UNFORMATTED_MODEL_PATH):
     """
     Save the trained model to a file.
 
@@ -160,7 +160,7 @@ def save_model(model, model_type, filename=default_unformatted_model_path):
         pickle.dump(model, model_file)
 
 
-def load_model(model_type, filename=default_unformatted_model_path):
+def load_model(model_type, filename=DEFAULT_UNFORMATTED_MODEL_PATH):
     """
     Load a trained model from a file.
 
@@ -182,7 +182,7 @@ def main(argv):
     model_type = argv[1]
 
     # Train and save the model
-    print("Starting model training for {} model...".format(model_type))
+    print(f"Starting model training for {model_type} model...")
     X_train, x_test, Y_train, y_test = prepare_model_data()
     model = train_model(X_train, Y_train, model_type)
     save_model(model, model_type)
