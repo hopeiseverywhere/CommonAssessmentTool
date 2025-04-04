@@ -12,11 +12,11 @@ class InterfaceBaseMLModel(ABC):
     """Interface of a base ML Model"""
 
     @abstractmethod
-    def fit(self, X: np.ndarray, y: np.ndarray):
+    def fit(self, features: np.ndarray, targets: np.ndarray):
         """Fit the model to provided data"""
 
     @abstractmethod
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, features: np.ndarray) -> np.ndarray:
         """Predict using the fitted model"""
 
     def save(self, path: str):
@@ -37,11 +37,11 @@ class LinearRegressionModel(InterfaceBaseMLModel):
     def __init__(self):
         self.model = LinearRegression()
 
-    def fit(self, X, y):
-        self.model.fit(X, y)
+    def fit(self, features, targets):
+        self.model.fit(features, targets)
 
-    def predict(self, X):
-        return self.model.predict(X)
+    def predict(self, features):
+        return self.model.predict(features)
 
     def __str__(self):
         return "Linear Regression"
@@ -51,11 +51,11 @@ class RandomForestModel(InterfaceBaseMLModel):
     def __init__(self, n_estimators=100, random_state=42):
         self.model = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
 
-    def fit(self, X, y):
-        self.model.fit(X, y)
+    def fit(self, features, targets):
+        self.model.fit(features, targets)
 
-    def predict(self, X):
-        return self.model.predict(X)
+    def predict(self, features):
+        return self.model.predict(features)
 
     def __str__(self):
         return "Random Forest Regressor"
@@ -65,11 +65,11 @@ class SVMModel(InterfaceBaseMLModel):
     def __init__(self):
         self.model = SVR()
 
-    def fit(self, X, y):
-        self.model.fit(X, y)
+    def fit(self, features, targets):
+        self.model.fit(features, targets)
 
-    def predict(self, X):
-        return self.model.predict(X)
+    def predict(self, features):
+        return self.model.predict(features)
 
     def __str__(self):
         return "Support Vector Machine"

@@ -2,7 +2,7 @@
 Pydantic models for data validation and serialization.
 Defines schemas for client data, predictions, and API responses.
 """
-
+# pylint: disable=too-few-public-methods
 from enum import IntEnum
 from typing import List, Optional
 

@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument, no-self-argument, too-few-public-methods
 from datetime import datetime, timedelta
 from typing import Optional
 

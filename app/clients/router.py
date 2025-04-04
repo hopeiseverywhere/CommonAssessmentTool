@@ -2,8 +2,7 @@
 Router module for client-related endpoints.
 Handles all HTTP requests for client operations including create, read, update, and delete.
 """
-# pylint: disable=unused-argument
-
+# pylint: disable=unused-argument, too-many-arguments, too-many-positional-arguments, too-many-locals
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query, status

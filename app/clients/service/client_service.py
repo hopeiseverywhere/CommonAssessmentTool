@@ -2,12 +2,11 @@
 Client service module handling all database operations for clients.
 Provides CRUD operations and business logic for client management.
 """
-
+# pylint: disable=arguments-differ, arguments-renamed, too-many-arguments, too-many-positional-arguments, too-many-locals
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 
 from fastapi import HTTPException, status
-from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from app.clients.schema import ClientUpdate, ServiceUpdate
@@ -134,8 +133,6 @@ class ClientQueryService(InterfaceClientQueryService):
         need_mental_health_support_bool: Optional[bool] = None,
     ):
         """Get clients filtered by any combination of criteria"""
-        query = db.query(Client)
-
         if education_level is not None and not 1 <= education_level <= 14:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -153,59 +150,44 @@ class ClientQueryService(InterfaceClientQueryService):
             )
 
         # Apply filters for non-None values
-        if employment_status is not None:
-            query = query.filter(Client.currently_employed == employment_status)
-        if age_min is not None:
-            query = query.filter(Client.age >= age_min)
-        if gender is not None:
-            query = query.filter(Client.gender == gender)
-        if education_level is not None:
-            query = query.filter(Client.level_of_schooling == education_level)
-        if work_experience is not None:
-            query = query.filter(Client.work_experience == work_experience)
-        if canada_workex is not None:
-            query = query.filter(Client.canada_workex == canada_workex)
-        if dep_num is not None:
-            query = query.filter(Client.dep_num == dep_num)
-        if canada_born is not None:
-            query = query.filter(Client.canada_born == canada_born)
-        if citizen_status is not None:
-            query = query.filter(Client.citizen_status == citizen_status)
-        if fluent_english is not None:
-            query = query.filter(Client.fluent_english == fluent_english)
-        if reading_english_scale is not None:
-            query = query.filter(Client.reading_english_scale == reading_english_scale)
-        if speaking_english_scale is not None:
-            query = query.filter(Client.speaking_english_scale == speaking_english_scale)
-        if writing_english_scale is not None:
-            query = query.filter(Client.writing_english_scale == writing_english_scale)
-        if numeracy_scale is not None:
-            query = query.filter(Client.numeracy_scale == numeracy_scale)
-        if computer_scale is not None:
-            query = query.filter(Client.computer_scale == computer_scale)
-        if transportation_bool is not None:
-            query = query.filter(Client.transportation_bool == transportation_bool)
-        if caregiver_bool is not None:
-            query = query.filter(Client.caregiver_bool == caregiver_bool)
-        if housing is not None:
-            query = query.filter(Client.housing == housing)
-        if income_source is not None:
-            query = query.filter(Client.income_source == income_source)
-        if felony_bool is not None:
-            query = query.filter(Client.felony_bool == felony_bool)
-        if attending_school is not None:
-            query = query.filter(Client.attending_school == attending_school)
-        if substance_use is not None:
-            query = query.filter(Client.substance_use == substance_use)
-        if time_unemployed is not None:
-            query = query.filter(Client.time_unemployed == time_unemployed)
-        if need_mental_health_support_bool is not None:
-            query = query.filter(
-                Client.need_mental_health_support_bool == need_mental_health_support_bool
-            )
+        filters = []
+
+        criteria_map = {
+            Client.currently_employed: employment_status,
+            Client.age: age_min,
+            Client.gender: gender,
+            Client.level_of_schooling: education_level,
+            Client.work_experience: work_experience,
+            Client.canada_workex: canada_workex,
+            Client.dep_num: dep_num,
+            Client.canada_born: canada_born,
+            Client.citizen_status: citizen_status,
+            Client.fluent_english: fluent_english,
+            Client.reading_english_scale: reading_english_scale,
+            Client.speaking_english_scale: speaking_english_scale,
+            Client.writing_english_scale: writing_english_scale,
+            Client.numeracy_scale: numeracy_scale,
+            Client.computer_scale: computer_scale,
+            Client.transportation_bool: transportation_bool,
+            Client.caregiver_bool: caregiver_bool,
+            Client.housing: housing,
+            Client.income_source: income_source,
+            Client.felony_bool: felony_bool,
+            Client.attending_school: attending_school,
+            Client.substance_use: substance_use,
+            Client.time_unemployed: time_unemployed,
+            Client.need_mental_health_support_bool: need_mental_health_support_bool,
+        }
+
+        for column, value in criteria_map.items():
+            if value is not None:
+                if column == Client.age:
+                    filters.append(column >= value)
+                else:
+                    filters.append(column == value)
 
         try:
-            return query.all()
+            return db.query(Client).filter(*filters).all()
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -219,9 +201,9 @@ class ClientQueryService(InterfaceClientQueryService):
         """
         query = db.query(Client).join(ClientCase)
 
-        for service_name, status in service_filters.items():
-            if status is not None:
-                filter_criteria = getattr(ClientCase, service_name) == status
+        for service_name, service_status in service_filters.items():
+            if service_status is not None:
+                filter_criteria = getattr(ClientCase, service_name) == service_status
                 query = query.filter(filter_criteria)
 
         try:
@@ -357,7 +339,10 @@ class ClientManagementService(InterfaceClientManagementService):
         if existing_case:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Client {client_id} already has a case assigned to case worker {case_worker_id}",
+                detail=(
+                    f"Client {client_id} already has a case assigned "
+                    f"to case worker {case_worker_id}"
+                ),
             )
 
         try:
