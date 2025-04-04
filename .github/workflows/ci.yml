@@ -32,10 +32,14 @@ jobs:
       - name: Run Code Formatting with Black
         run: |
           black .   # Format the entire repo
-          
+
       - name: Run Linter
         run: |
           pylint ./app ./tests
+      
+      - name: Check Docker syntax and Build Docker Image
+        run: |
+          docker build -t common-assessment-tool .
 
       - name: Print Success Message
         if: success()
