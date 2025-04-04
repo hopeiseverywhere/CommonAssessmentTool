@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from sqlalchemy.orm import Session
 
 from dotenv import load_dotenv
@@ -25,7 +25,8 @@ class UserCreate(BaseModel):
     password: str
     role: UserRole
 
-    @validator("role")
+    @field_validator("role")
+    @classmethod
     def validate_role(cls, v):
         if v not in [UserRole.ADMIN, UserRole.CASE_WORKER]:
             raise ValueError("Role must be either admin or case_worker")
@@ -37,8 +38,7 @@ class UserResponse(BaseModel):
     email: str
     role: UserRole
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Load configuration from .env
