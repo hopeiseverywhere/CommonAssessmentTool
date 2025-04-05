@@ -133,7 +133,6 @@ tzdata==2023.3
 uri-template==1.2.0
 urllib3==2.0.7
 uvicorn==0.23.2
-uvloop==0.17.0
 watchfiles==0.20.0
 wcwidth==0.2.8
 webcolors==1.13
@@ -141,4 +140,3 @@ webencodings==0.5.1
 websocket-client==1.5.1
 websockets==11.0.3
 widgetsnbextension==4.0.7
-mypy=1.15.1
