@@ -1,55 +1,63 @@
 name: Python CI Pipeline
 
 on:
-  push:
-  pull_request:
-    branches: [master, main]
+    push:
+        branches: [ dev ]
+
+    pull_request:
+        branches: [ master, main ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+    test:
+        runs-on: ubuntu-latest # Use the latest Ubuntu runner
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4 # Checkout the repository
+        steps:
+            -   name: Checkout Code
+                uses: actions/checkout@v4 # Checkout the repository
 
-      - name: Set up Python
-        uses: actions/setup-python@v5 # Set up Python environment
-        with:
-          python-version: "3.11"
+            -   name: Set up Python
+                uses: actions/setup-python@v5 # Set up Python environment
+                with:
+                    python-version: "3.11"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip  # Upgrade pip to the latest version
-          pip install setuptools wheel
-          pip install -r requirements.txt  # Install dependencies from requirements.txt
-          pip install pylint pytest black
+            -   name: Install dependencies
+                run: |
+                    python -m pip install --upgrade pip  # Upgrade pip to the latest version
+                    pip install setuptools wheel
+                    pip install -r requirements.txt  # Install dependencies from requirements.txt
+                    pip install pylint pytest black isort
 
-      - name: Run Tests
-        run: |
-          python -m pytest tests/
-      
-      - name: Run Code Formatting with Black
-        run: |
-          black .   # Format the entire repo
+            -   name: Run Code Formatting with Black # Format the entire repo
+                run: |
+                    black .
+            -   name: Run Code Formatting with isort
+                run: |
+                    isort .
 
-      - name: Run Linter
-        run: |
-          pylint ./app ./tests
-      
-      - name: Check Docker syntax and Build Docker Image
-        run: |
-          docker build -t common-assessment-tool .
+            -   name: Run Linter
+                run: |
+                    pylint ./app ./tests
 
-      - name: Print Success Message
-        if: success()
-        run: |
-          echo "CI Pipeline completed successfully!"
-          echo "========================"
-          echo "✓ Code checked out"
-          echo "✓ Python environment set up"
-          echo "✓ Dependencies installed"
-          echo "✓ Tests executed"
-          echo "✓ Linting completed"
-          echo "✓ Formatting checked"
-          echo "========================"
+            -   name: Run Tests
+                run: |
+                    python -m pytest tests/
+
+            -   name: Check Docker syntax
+                run: docker run --rm -i hadolint/hadolint < Dockerfile
+                
+            -   name: Build Docker Image
+                run: |
+                    docker build -t common-assessment-tool .
+
+            -   name: Print Success Message
+                if: success()
+                run: |
+                    echo "CI Pipeline completed successfully!"
+                    echo "========================"
+                    echo "✓ Code checked out"
+                    echo "✓ Python environment set up"
+                    echo "✓ Dependencies installed"
+                    echo "✓ Tests executed"
+                    echo "✓ Linting completed"
+                    echo "✓ Formatting checked"
+                    echo "========================"
