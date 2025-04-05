@@ -13,14 +13,13 @@ import sys
 # Third-party imports
 import numpy as np
 import pandas as pd
-from constants import COLUMNS_FIELDS, INTERVENTION_FIELDS
 
 # Local imports
 # from sklearn import svm
 # from sklearn.ensemble import RandomForestRegressor
 # from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from app.clients.service.constants import COLUMNS_FIELDS
+from app.clients.service.constants import COLUMNS_FIELDS, INTERVENTION_FIELDS
 from .ml_models import (
     InterfaceBaseMLModel,
     LinearRegressionModel,

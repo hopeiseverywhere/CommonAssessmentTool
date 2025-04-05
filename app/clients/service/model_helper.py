@@ -1,4 +1,4 @@
-from constants import COLUMNS_FIELDS, INTERVENTION_FIELDS
+from app.clients.service.constants import *
 
 
 def get_feature_columns():
