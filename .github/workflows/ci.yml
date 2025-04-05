@@ -35,6 +35,7 @@ jobs:
             -   name: Run Code Formatting with Black # Format the entire repo
                 run: |
                     black .
+
             -   name: Run Code Formatting with isort
                 run: |
                     isort .
@@ -58,7 +59,14 @@ jobs:
 
             -   name: Test Docker container
                 run: |
-                    curl http://localhost:8000/docs
+                    curl --fail http://localhost:8000/docs || {
+                        echo "Health check failed"
+                        docker logs common-assessment-tool
+                        exit 1
+                    }
+
+            - name: Stop Docker container
+              run: docker stop common-assessment-tool
 
             -   name: Print Success Message
                 if: success()
