@@ -1,8 +1,9 @@
 # pylint: disable=unused-argument, no-self-argument, too-few-public-methods
+import os
 from datetime import datetime, timedelta
 from typing import Optional
 
-import os
+from dotenv import load_dotenv
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm

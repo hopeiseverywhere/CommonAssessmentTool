@@ -1,3 +1,4 @@
+import os
 from abc import ABC, abstractmethod
 from typing import List
 
@@ -7,9 +8,18 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
 
+from app.clients.service.model_helper import get_all_feature_columns, get_true_file_name
+
+default_unformatted_model_path = os.path.join(
+    os.path.dirname(__file__), "pretrained_models", "model_{}.pkl"
+)
+
 
 class InterfaceBaseMLModel(ABC):
     """Interface of a base ML Model"""
+
+    def __init__(self):
+        self.feature_columns = get_all_feature_columns()
 
     @abstractmethod
     def fit(self, features: np.ndarray, targets: np.ndarray):
@@ -35,6 +45,7 @@ class InterfaceBaseMLModel(ABC):
 
 class LinearRegressionModel(InterfaceBaseMLModel):
     def __init__(self):
+        super().__init__()
         self.model = LinearRegression()
 
     def fit(self, features, targets):
@@ -46,9 +57,19 @@ class LinearRegressionModel(InterfaceBaseMLModel):
     def __str__(self):
         return "Linear Regression"
 
+    def _load_if_trained(self):
+        path = get_true_file_name(str(self), default_unformatted_model_path)
+        print(f"Attempting to load model from: {path}")
+        if os.path.exists(path):
+            print(f"Model file exists, loading...")
+            self.model = InterfaceBaseMLModel.load(path)
+        else:
+            print(f"Model file not found at {path}")
+
 
 class RandomForestModel(InterfaceBaseMLModel):
     def __init__(self, n_estimators=100, random_state=42):
+        super().__init__()
         self.model = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
 
     def fit(self, features, targets):
@@ -60,9 +81,19 @@ class RandomForestModel(InterfaceBaseMLModel):
     def __str__(self):
         return "Random Forest Regressor"
 
+    def _load_if_trained(self):
+        path = get_true_file_name(str(self), default_unformatted_model_path)
+        print(f"Attempting to load model from: {path}")
+        if os.path.exists(path):
+            print(f"Model file exists, loading...")
+            self.model = InterfaceBaseMLModel.load(path)
+        else:
+            print(f"Model file not found at {path}")
+
 
 class SVMModel(InterfaceBaseMLModel):
     def __init__(self):
+        super().__init__()
         self.model = SVR()
 
     def fit(self, features, targets):
@@ -73,6 +104,15 @@ class SVMModel(InterfaceBaseMLModel):
 
     def __str__(self):
         return "Support Vector Machine"
+
+    def _load_if_trained(self):
+        path = get_true_file_name(str(self), default_unformatted_model_path)
+        print(f"Attempting to load model from: {path}")
+        if os.path.exists(path):
+            print(f"Model file exists, loading...")
+            self.model = InterfaceBaseMLModel.load(path)
+        else:
+            print(f"Model file not found at {path}")
 
 
 class InterfaceMLModelRepository(ABC):
