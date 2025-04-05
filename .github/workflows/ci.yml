@@ -20,6 +20,11 @@ jobs:
                 with:
                     python-version: "3.11"
 
+            -   name: Hadolint Action
+                uses: hadolint/hadolint-action@v3.1.0
+                with:
+                    dockerfile: ./Dockerfile
+
             -   name: Install dependencies
                 run: |
                     python -m pip install --upgrade pip  # Upgrade pip to the latest version
@@ -42,12 +47,18 @@ jobs:
                 run: |
                     python -m pytest tests/ 
 
-            -   name: Check Docker syntax
-                run: docker run --rm -i hadolint/hadolint < Dockerfile
-
             -   name: Build Docker Image
                 run: |
                     docker build -t common-assessment-tool .
+
+            -   name: Run Docker container
+                run: |
+                        docker run -d -p 8000:8000 common-assessment-tool
+                        sleep 10  
+
+            -   name: Test Docker container
+                run: |
+                    curl http://localhost:8000/docs
 
             -   name: Print Success Message
                 if: success()
@@ -60,4 +71,4 @@ jobs:
                     echo "✓ Tests executed"
                     echo "✓ Linting completed"
                     echo "✓ Formatting checked"
-                    echo "========================"
+                    echo "========================"                        
