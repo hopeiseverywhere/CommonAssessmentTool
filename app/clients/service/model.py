@@ -14,6 +14,7 @@ import sys
 import numpy as np
 import pandas as pd
 from fastapi import HTTPException
+from constants import COLUMNS_FIELDS, INTERVENTION_FIELDS
 
 # Local imports
 # from sklearn import svm
@@ -63,18 +64,8 @@ def prepare_model_data(test_size=0.2, random_state=42):
     # Load dataset
     data = pd.read_csv("data_commontool.csv")
 
-    # Define intervention columns
-    intervention_columns = [
-        "employment_assistance",
-        "life_stabilization",
-        "retention_services",
-        "specialized_services",
-        "employment_related_financial_supports",
-        "employer_financial_supports",
-        "enhanced_referrals",
-    ]
     # Combine all feature columns
-    all_features = COLUMNS_FIELDS + intervention_columns
+    all_features = COLUMNS_FIELDS + INTERVENTION_FIELDS
     # Prepare training data
     features = np.array(data[all_features])  # Input features for the model
     targets = np.array(data["success_rate"])  # Target variable

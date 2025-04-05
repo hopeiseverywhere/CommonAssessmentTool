@@ -24,3 +24,13 @@ COLUMNS_FIELDS = [
     "time_unemployed",  # Years unemployed
     "need_mental_health_support_bool",  # Needs mental health support (bool)
 ]
+
+INTERVENTION_FIELDS = [
+    "employment_assistance",
+    "life_stabilization",
+    "retention_services",
+    "specialized_services",
+    "employment_related_financial_supports",
+    "employer_financial_supports",
+    "enhanced_referrals"
+]
