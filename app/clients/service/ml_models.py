@@ -42,6 +42,9 @@ class InterfaceBaseMLModel(ABC):
     def __str__(self) -> str:
         """Return the name of the model"""
 
+    def load_if_trained(self):
+        pass
+
 
 class LinearRegressionModel(InterfaceBaseMLModel):
     def __init__(self):
@@ -57,11 +60,11 @@ class LinearRegressionModel(InterfaceBaseMLModel):
     def __str__(self):
         return "Linear Regression"
 
-    def _load_if_trained(self):
+    def load_if_trained(self):
         path = get_true_file_name(str(self), default_unformatted_model_path)
         print(f"Attempting to load model from: {path}")
         if os.path.exists(path):
-            print(f"Model file exists, loading...")
+            print("Model file exists, loading...")
             self.model = InterfaceBaseMLModel.load(path)
         else:
             print(f"Model file not found at {path}")
@@ -81,11 +84,11 @@ class RandomForestModel(InterfaceBaseMLModel):
     def __str__(self):
         return "Random Forest Regressor"
 
-    def _load_if_trained(self):
+    def load_if_trained(self):
         path = get_true_file_name(str(self), default_unformatted_model_path)
         print(f"Attempting to load model from: {path}")
         if os.path.exists(path):
-            print(f"Model file exists, loading...")
+            print("Model file exists, loading...")
             self.model = InterfaceBaseMLModel.load(path)
         else:
             print(f"Model file not found at {path}")
@@ -105,11 +108,11 @@ class SVMModel(InterfaceBaseMLModel):
     def __str__(self):
         return "Support Vector Machine"
 
-    def _load_if_trained(self):
+    def load_if_trained(self):
         path = get_true_file_name(str(self), default_unformatted_model_path)
         print(f"Attempting to load model from: {path}")
         if os.path.exists(path):
-            print(f"Model file exists, loading...")
+            print("Model file exists, loading...")
             self.model = InterfaceBaseMLModel.load(path)
         else:
             print(f"Model file not found at {path}")
@@ -168,7 +171,7 @@ class MLModelManager(InterfaceMLModelManager):
         self._repository = repository
         self._current_model = repository.get_model_instance("Random Forest Regressor")
 
-    def get_current_model(self) -> str:
+    def get_current_model(self) -> InterfaceBaseMLModel:
         return self._current_model
 
     def switch_model(self, model_name: str) -> bool:
