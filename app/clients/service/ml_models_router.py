@@ -36,7 +36,6 @@ def current_model():
 @router.post("/predict/{model_name}")
 def predict_with_model_name(features: PredictionFeatures, model_name: str):
     """Predict based on a given ML model name"""
-    prediction_request = PredictionRequest.from_structured_features(features)
     model = model_repository.get_model_instance(model_name)
     model.load_if_trained()
     _predict(model, features)
@@ -45,7 +44,6 @@ def predict_with_model_name(features: PredictionFeatures, model_name: str):
 @router.post("/predict")
 def predict_with_current_model(features: PredictionFeatures):
     """Predict based on current ML model"""
-    prediction_request = PredictionRequest.from_structured_features(features)
     model = model_manager.get_current_model()
     model.load_if_trained()
     _predict(model, features)

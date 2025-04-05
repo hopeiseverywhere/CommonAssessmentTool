@@ -1,4 +1,4 @@
-from app.clients.service.constants import *
+from app.clients.service.constants import COLUMNS_FIELDS, INTERVENTION_FIELDS
 
 
 def get_feature_columns():
@@ -17,5 +17,5 @@ def get_all_feature_columns():
 
 
 def get_true_file_name(model_type, filename):
-    """Format pikle file name"""
+    """Format pickle file name"""
     return filename.format(model_type).replace(" ", "_")
