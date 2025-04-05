@@ -54,7 +54,7 @@ jobs:
 
             -   name: Run Docker container
                 run: |
-                        docker docker run -d --name common-assessment-container -p 8000:8000 common-assessment-tool
+                        docker run -d --name common-assessment-container -p 8000:8000 common-assessment-tool
                         sleep 10  
 
             -   name: Test Docker container
