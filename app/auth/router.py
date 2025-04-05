@@ -1,14 +1,18 @@
+# pylint: disable=unused-argument, no-self-argument, too-few-public-methods
 import os
 from datetime import datetime, timedelta
 from typing import Optional
 
 from dotenv import load_dotenv
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from sqlalchemy.orm import Session
+
+from dotenv import load_dotenv
 
 from app.database import get_db
 from app.models import User, UserRole
@@ -22,9 +26,10 @@ class UserCreate(BaseModel):
     password: str
     role: UserRole
 
-    @validator("role")
+    @field_validator("role")
+    @classmethod
     def validate_role(cls, v):
-        if v not in [UserRole.admin, UserRole.case_worker]:
+        if v not in [UserRole.ADMIN, UserRole.CASE_WORKER]:
             raise ValueError("Role must be either admin or case_worker")
         return v
 
@@ -34,8 +39,7 @@ class UserResponse(BaseModel):
     email: str
     role: UserRole
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Load configuration from .env
@@ -87,8 +91,8 @@ async def get_current_user(
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-    except JWTError:
-        raise credentials_exception
+    except JWTError as exc:
+        raise credentials_exception from exc
 
     user = db.query(User).filter(User.username == username).first()
     if user is None:
@@ -97,7 +101,7 @@ async def get_current_user(
 
 
 def get_admin_user(current_user: User = Depends(get_current_user)):
-    if current_user.role != UserRole.admin:
+    if current_user.role != UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only admin users can perform this operation",
@@ -157,4 +161,4 @@ async def create_user(
         return db_user
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e

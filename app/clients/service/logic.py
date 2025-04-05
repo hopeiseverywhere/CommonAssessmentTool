@@ -14,6 +14,8 @@ from itertools import product
 
 import numpy as np
 
+from app.clients.service.constants import COLUMNS_FIELDS
+
 # Constants
 COLUMN_INTERVENTIONS = [
     "Life Stabilization",
@@ -42,35 +44,10 @@ def clean_input_data(input_data):
     Returns:
         list: Cleaned and formatted data ready for model input
     """
-    columns = [
-        "age",
-        "gender",
-        "work_experience",
-        "canada_workex",
-        "dep_num",
-        "canada_born",
-        "citizen_status",
-        "level_of_schooling",
-        "fluent_english",
-        "reading_english_scale",
-        "speaking_english_scale",
-        "writing_english_scale",
-        "numeracy_scale",
-        "computer_scale",
-        "transportation_bool",
-        "caregiver_bool",
-        "housing",
-        "income_source",
-        "felony_bool",
-        "attending_school",
-        "currently_employed",
-        "substance_use",
-        "time_unemployed",
-        "need_mental_health_support_bool",
-    ]
-    demographics = {key: input_data[key] for key in columns}
+
+    demographics = {key: input_data[key] for key in COLUMNS_FIELDS}
     output = []
-    for column in columns:
+    for column in COLUMNS_FIELDS:
         value = demographics.get(column, None)
         if isinstance(value, str):
             value = convert_text(value)  # Removed 'column' from here as it wasn't used

@@ -2,14 +2,12 @@
 Pydantic models for data validation and serialization.
 Defines schemas for client data, predictions, and API responses.
 """
-
+# pylint: disable=too-few-public-methods
 from enum import IntEnum
 from typing import List, Optional
 
 # Standard library imports
-from pydantic import BaseModel, Field, validator
-
-from app.models import UserRole
+from pydantic import BaseModel, Field, ConfigDict
 
 
 # Enums for validation
@@ -76,7 +74,7 @@ class ClientBase(BaseModel):
     time_unemployed: int = Field(ge=0, description="Time unemployed in months")
     need_mental_health_support_bool: bool = Field(description="Needs mental health support")
 
-    class Config:
+    model_config = ConfigDict(
         json_schema_extra = {
             "example": {
                 "age": 25,
@@ -105,13 +103,13 @@ class ClientBase(BaseModel):
                 "need_mental_health_support_bool": False,
             }
         }
+    )
 
 
 class ClientResponse(ClientBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ClientUpdate(BaseModel):
@@ -153,8 +151,7 @@ class ServiceResponse(BaseModel):
     enhanced_referrals: bool
     success_rate: int = Field(ge=0, le=100)
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ServiceUpdate(BaseModel):
