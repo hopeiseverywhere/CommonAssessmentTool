@@ -93,3 +93,4 @@ class ClientCase(Base):
 
     client = relationship("Client", back_populates="cases")
     user = relationship("User", back_populates="cases")
+    print("TESTING ANY CHANGES TRIGGER CI")
