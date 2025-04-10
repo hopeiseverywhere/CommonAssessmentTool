@@ -2,10 +2,10 @@
 Router module for client-related endpoints.
 Handles all HTTP requests for client operations including create, read, update, and delete.
 """
-
+# pylint: disable=unused-argument, too-many-arguments, too-many-positional-arguments, too-many-locals
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.auth.router import get_admin_user, get_current_user
@@ -18,7 +18,7 @@ from app.clients.schema import (
 )
 from app.clients.service.client_service import ClientService
 from app.database import get_db
-from app.models import User, UserRole
+from app.models import User
 
 router = APIRouter(prefix="/clients", tags=["clients"])
 
