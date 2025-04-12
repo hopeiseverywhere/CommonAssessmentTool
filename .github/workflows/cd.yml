@@ -39,9 +39,9 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d -p 8000:8000 common-assessment-tool
+          docker compose up -d
           sleep 10  # Wait for container to start
 
       - name: Test Docker container
         run: |
-          curl http://localhost:8000/docs
+          http://ec2-54-165-172-227.compute-1.amazonaws.com:8000/docs

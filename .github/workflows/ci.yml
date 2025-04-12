@@ -79,23 +79,4 @@ jobs:
                     echo "✓ Tests executed"
                     echo "✓ Linting completed"
                     echo "✓ Formatting checked"
-                    echo "========================"            
-
-    deploy:
-        needs: test # This ensures deploy only runs if tests pass
-        runs-on: ubuntu-latest
-
-        steps:
-          - uses: actions/checkout@v4
-
-          - name: Build Docker image
-            run: docker build -t common-assessment-tool .
-
-          - name: Run Docker container
-            run: |
-              docker compose up -d
-              sleep 10  # Wait for container to start
-
-          - name: Test Docker container
-            run: |
-              http://ec2-54-165-172-227.compute-1.amazonaws.com:8000/docs
+                    echo "========================"
