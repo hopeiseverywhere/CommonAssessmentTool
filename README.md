@@ -22,9 +22,13 @@ This also has an API file to interact with the front end, and logic in order to 
 -------------------------How to Use-------------------------
 1. In the virtual environment you've created for this project, install all dependencies in requirements.txt (pip install -r requirements.txt)
 
-2. Create a .env file with the following fields:
+2. Create a .env file with the following fields. The top four are just for CD pipeline purposes, so if running locally they will not be needed:
 ```markdown
-SECRET_KEY = "your-secret-key-here"
+AWS_ACCESS_KEY_ID = "<your-aws-access-key-id-here>"
+EC2_INSTANCE_UP = "<your-ec2-instance-up-here>"
+EC2_INSTANCE_IP = "<your-ec2-instance-ip-here>"
+EC2_USER = "<your-ec2-user-here>"
+SECRET_KEY = "<your-secret-key-here>"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 ```
