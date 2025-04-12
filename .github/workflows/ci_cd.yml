@@ -91,11 +91,15 @@ jobs:
             - name: Build Docker image
               run: docker build -t common-assessment-tool .
 
-            - name: Run Docker container
+            - name: Read .env file
               run: |
-                  docker compose up -d
-                  sleep 10  # Wait for container to start
+                  export $(grep 'AWS_ACCESS_KEY_ID' .env)
+                  export $(grep 'EC2_INSTANCE_UP' .env)
+                  export $(grep 'EC2_INSTANCE_IP' .env)
+                  export $(grep 'EC2_USER' .env)
 
-            - name: Test Docker container
+            - name: Deploy Docker Container
               run: |
-                  http://ec2-54-165-172-227.compute-1.amazonaws.com:8000/docs
+                  ssh -o StrictHostKeyChecking=no ${{ AWS_ACCESS_KEY_ID }}@${{ EC2_INSTANCE_IP }} << 'EOF'
+                  docker run -d -p 8000:8000 common-assessment-tool
+                  sleep 10  # Wait for container to start

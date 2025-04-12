@@ -8,8 +8,3 @@ services:
         - action: sync
           path: .
           target: /code
-    environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - EC2_INSTANCE_UP=${AWS_ACCESS_KEY_ID}
-      - EC2_INSTANCE_IP=${AWS_ACCESS_KEY_ID}
-      - EC2_USER=${AWS_ACCESS_KEY_ID}
