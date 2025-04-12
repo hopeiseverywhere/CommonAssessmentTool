@@ -48,4 +48,4 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no $AWS_ACCESS_KEY_ID@$EC2_INSTANCE_IP << 'EOF'
           docker run -d -p 8000:8000 common-assessment-tool
-          sleep 10  # Wait for container to start
+          EOF
