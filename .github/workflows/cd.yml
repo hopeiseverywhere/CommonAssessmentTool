@@ -39,10 +39,14 @@ jobs:
 
       - name: Read .env file
         run: |
-          export $(grep 'AWS_ACCESS_KEY_ID' .env)
-          export $(grep 'EC2_INSTANCE_UP' .env)
-          export $(grep 'EC2_INSTANCE_IP' .env)
-          export $(grep 'EC2_USER' .env)
+          export $(grep '^AWS_ACCESS_KEY_ID=' .env)
+          export $(grep '^EC2_INSTANCE_UP=' .env)
+          export $(grep '^EC2_INSTANCE_IP=' .env)
+          export $(grep '^EC2_USER=' .env)
+          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+          echo "EC2_INSTANCE_UP: EC2_INSTANCE_UP"
+          echo "EC2_INSTANCE_IP: EC2_INSTANCE_IP"
+          echo "EC2_USER: EC2_USER"
 
       - name: Deploy Docker Container
         run: |
