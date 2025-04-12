@@ -75,7 +75,15 @@ docker build -t common_assessment_tool .
 docker run --rm -p 8000:8000 common_assessment_tool
 ```
 6. Follow the steps to run the Swagger UI as described above (clicking link in step 5 should take you to the UI)
-7. To run using Docker-Compose, run the command below in the CommonAssessmentTool repo's directory
+7. To run using Docker-Compose in the foreground, run the command below in the CommonAssessmentTool repo's directory
 ```
 docker compose up
+```
+8. To run using Docker-Compose in the background, run the command below in the CommonAssessmentTool repo's directory
+```
+docker compose up -d
+```
+9. If running using the background command, you can stop the container gracefully with the following command:
+```
+docker compose stop
 ```
