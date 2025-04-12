@@ -43,13 +43,9 @@ jobs:
           export $(grep '^EC2_INSTANCE_UP=' .env)
           export $(grep '^EC2_INSTANCE_IP=' .env)
           export $(grep '^EC2_USER=' .env)
-          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
-          echo "EC2_INSTANCE_UP: EC2_INSTANCE_UP"
-          echo "EC2_INSTANCE_IP: EC2_INSTANCE_IP"
-          echo "EC2_USER: EC2_USER"
 
       - name: Deploy Docker Container
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ AWS_ACCESS_KEY_ID }}@${{ EC2_INSTANCE_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ $AWS_ACCESS_KEY_ID }}@${{ $EC2_INSTANCE_IP }} << 'EOF'
           docker run -d -p 8000:8000 common-assessment-tool
           sleep 10  # Wait for container to start
