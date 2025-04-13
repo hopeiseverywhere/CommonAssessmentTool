@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Debug Secret Value Length
-      run: printf "%s" "${{ secrets.EC2_PEM_KEY }}" | grep -c '^'
+      run: printf "%s" "${{ secrets.EC2_KEY }}" | grep -c '^'
 
     - name: Login to DockerHub
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
