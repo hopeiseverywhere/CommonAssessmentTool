@@ -116,15 +116,17 @@ jobs:
 
         steps:
             -   name: Checkout repository
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
 
             -   name: Login to DockerHub
                 run: |
                     echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-            -   name: Build and push Docker image
+            -   name: Build Docker image
                 run: |
                     docker build -t common_assessment_tool .
+
+            -   name: Push image to Docker Hub
                     docker tag common_assessment_tool ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
                     docker push ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
 
