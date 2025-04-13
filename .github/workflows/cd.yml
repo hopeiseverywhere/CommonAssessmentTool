@@ -18,7 +18,7 @@ jobs:
 
     - name: Debug PEM Key Line Count
       run: |
-        printf "%s" "${{ secrets.EC2_KEY }}" | grep -c '^'
+        printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" | grep -c '^'
 
     - name: Login to DockerHub
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
@@ -34,7 +34,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
           docker stop my_app_container || true
