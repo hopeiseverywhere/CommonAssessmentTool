@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI-CD Pipeline
 
 on:
     push:
@@ -80,3 +80,35 @@ jobs:
                     echo "✓ Linting completed"
                     echo "✓ Formatting checked"
                     echo "========================"
+
+    # Source for how this was set up
+    # https://dev.to/s3cloudhub/automate-docker-deployments-push-your-images-to-ec2-with-github-actions-3a3j
+    deploy:
+        needs: test # This ensures deploy only runs if tests pass
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v2
+
+          - name: Login to DockerHub
+            run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+          - name: Build and push Docker image
+            run: |
+              docker build -t common_assessment_tool .
+              docker tag common_assessment_tool ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+              docker push ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+
+          - name: Install SSH Key
+            uses: webfactory/ssh-agent@v0.9.1
+            with:
+              ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          - name: Deploy Docker image to EC2
+            run: |
+              ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_IP }} << 'EOF'
+              docker pull ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+              docker stop $(docker ps -a -q) || true
+              docker run -d -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+              EOF
