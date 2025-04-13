@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [master, main]
 
-# Source for how this was set up
+# Source for how this was set up test
 # https://dev.to/s3cloudhub/automate-docker-deployments-push-your-images-to-ec2-with-github-actions-3a3j
 jobs:
   deploy:
