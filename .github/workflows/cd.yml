@@ -37,6 +37,6 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
-          docker stop my_app_container || true
-          docker rm my_app_container || true
-          docker run -d --name my_app_container -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+          docker stop common_assessment_tool || true
+          docker rm common_assessment_tool || true
+          docker run -d --name common_assessment_tool_container -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
