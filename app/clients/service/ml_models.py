@@ -106,7 +106,7 @@ class SVMModel(InterfaceBaseMLModel):
         return self.model.predict(features)
 
     def __str__(self):
-        return "SVM"
+        return "Support Vector Regressor"
 
     def load_if_trained(self):
         path = get_true_file_name(str(self), default_unformatted_model_path)
@@ -120,7 +120,6 @@ class SVMModel(InterfaceBaseMLModel):
 
 class InterfaceMLModelRepository(ABC):
     """Interface for ML Models storage"""
-
     @abstractmethod
     def list_models(self) -> List[InterfaceBaseMLModel]:
         """Get list of all available models instances"""
