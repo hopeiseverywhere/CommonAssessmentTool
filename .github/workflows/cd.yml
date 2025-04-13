@@ -25,6 +25,9 @@ jobs:
         docker tag common_assessment_tool ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
 
+    - name: Debug Secret Value Length
+      run: echo "${{ secrets.EC2_SSH_KEY }}" | wc -l
+
     - name: SSH and update EC2 container
       uses: appleboy/ssh-action@v1.0.3
       with:
