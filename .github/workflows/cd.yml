@@ -24,8 +24,9 @@ jobs:
           docker build -t common_assessment_tool .
           docker tag common_assessment_tool ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+
       - name: Install SSH Key
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -34,4 +35,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
           docker stop $(docker ps -a -q) || true
-          docker
+          docker run -d -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+          EOF
