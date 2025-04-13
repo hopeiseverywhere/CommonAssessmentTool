@@ -8,7 +8,7 @@ on:
         branches: [ master, main ]
 
 jobs:
-    test:
+    test_code:
         runs-on: ubuntu-latest # Use the latest Ubuntu runner
 
         steps:
@@ -60,7 +60,7 @@ jobs:
     # Source for how this was set up
     # https://dev.to/s3cloudhub/automate-docker-deployments-push-your-images-to-ec2-with-github-actions-3a3j
     deploy:
-        needs: test # This ensures deploy only runs if tests pass
+        needs: test_code # This ensures deploy only runs if tests pass
         runs-on: ubuntu-latest
 
         steps:
