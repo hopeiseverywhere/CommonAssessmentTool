@@ -32,20 +32,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: docker build -t common-assessment-tool .
-
-      - name: Read .env file
-        run: |
-          export $(grep '^AWS_ACCESS_KEY_ID=' .env)
-          export $(grep '^EC2_INSTANCE_UP=' .env)
-          export $(grep '^EC2_INSTANCE_IP=' .env)
-          export $(grep '^EC2_USER=' .env)
-
-      - name: Deploy Docker Container
-        run: |
-          ssh -o StrictHostKeyChecking=no $AWS_ACCESS_KEY_ID @ $EC2_INSTANCE_IP << 'EOF'
-          docker run -d -p 8000:8000 common-assessment-tool
-          EOF
+      - id: deploy
+        uses: bitovi/github-actions-deploy-docker-to-ec2@v1.0.1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_default_region: us-west-2
+          aws_elb_app_port: 8000
