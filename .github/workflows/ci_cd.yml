@@ -141,5 +141,6 @@ jobs:
                     ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_IP }} << 'EOF'
                     docker pull ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
                     docker stop $(docker ps -a -q) || true
+                    docker rm $(docker ps -a -q) || true
                     docker run -d -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
                     EOF
