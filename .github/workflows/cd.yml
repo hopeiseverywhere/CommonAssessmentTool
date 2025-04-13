@@ -16,6 +16,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Debug Secret Value Length
+      run: printf "%s" "${{ secrets.EC2_PEM_KEY }}" | grep -c '^'
+
     - name: Login to DockerHub
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
@@ -24,9 +27,6 @@ jobs:
         docker build -t common_assessment_tool .
         docker tag common_assessment_tool ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
-
-    - name: Debug Secret Value Length
-      run: echo "${{ secrets.EC2_SSH_KEY }}" | wc -l
 
     - name: SSH and update EC2 container
       uses: appleboy/ssh-action@v1.0.3
