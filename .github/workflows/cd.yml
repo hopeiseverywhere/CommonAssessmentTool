@@ -28,15 +28,14 @@ jobs:
         docker tag common_assessment_tool ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
 
-    - name: Install SSH Key
-      uses: webfactory/ssh-agent@v0.5.3
+    - name: SSH and update EC2 container
+      uses: appleboy/ssh-action@v1.0.0
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    - name: Deploy Docker image to EC2
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_IP }} << 'EOF'
-        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
-        docker stop $(docker ps -a -q) || true
-        docker run -d -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
-        EOF
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
+          docker stop my_app_container || true
+          docker rm my_app_container || true
+          docker run -d --name my_app_container -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
