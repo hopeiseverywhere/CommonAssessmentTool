@@ -127,6 +127,7 @@ jobs:
                     docker build -t common_assessment_tool .
 
             -   name: Push image to Docker Hub
+                run: |
                     docker tag common_assessment_tool ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
                     docker push ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
 
