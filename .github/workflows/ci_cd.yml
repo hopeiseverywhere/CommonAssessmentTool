@@ -108,7 +108,7 @@ jobs:
                     echo "✓ Docker container stopped"
                     echo "========================"
 
-    # Source for how this was set up
+    # Source for how deployment was set up
     # https://dev.to/s3cloudhub/automate-docker-deployments-push-your-images-to-ec2-with-github-actions-3a3j
     deploy:
         needs: [test_code, test_docker_setup] # This ensures deploy only runs if tests pass
@@ -144,3 +144,16 @@ jobs:
                     docker rm $(docker ps -a -q) || true
                     docker run -d -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/common_assessment_tool:latest
                     EOF
+
+            -   name: Print Success Message
+                if: success()
+                run: |
+                    echo "Deployed updates to EC2 instance successfully!"
+                    echo "========================"
+                    echo "✓ Code checked out"
+                    echo "✓ Logged in to Docker Hub"
+                    echo "✓ Docker image built"
+                    echo "✓ Docker image pushed to Docker Hub"
+                    echo "✓ Installed EC2 SSH key"
+                    echo "✓ Docker image deployed successfully"
+                    echo "========================"
