@@ -79,3 +79,7 @@ docker run --rm -p 8000:8000 common_assessment_tool
 ```
 docker compose up
 ```
+
+## Access public address
+Backend application is now deployed to the AWS Cloud. 
+Access the backend application from the endpoint by clicking: http://ec2-54-165-172-227.compute-1.amazonaws.com:8000/docs
