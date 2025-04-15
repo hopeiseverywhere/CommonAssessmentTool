@@ -87,3 +87,7 @@ docker compose up -d
 ```
 docker compose stop
 ```
+
+## Access public address
+Backend application is now deployed to the AWS Cloud. 
+Access the backend application from the endpoint by clicking: http://ec2-54-165-172-227.compute-1.amazonaws.com:8000/docs
