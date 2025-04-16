@@ -20,7 +20,7 @@ from app.clients.service.client_service import ClientService
 from app.database import get_db
 from app.models import User
 
-router = APIRouter(prefix="/clients", tags=["clientsTEST"])
+router = APIRouter(prefix="/clients", tags=["clientsTEST2"])
 
 
 @router.get("/", response_model=ClientListResponse)
